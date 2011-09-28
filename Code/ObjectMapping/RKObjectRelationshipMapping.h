@@ -36,9 +36,4 @@
 
 + (RKObjectRelationshipMapping*)mappingFromKeyPath:(NSString*)sourceKeyPath toKeyPath:(NSString*)destinationKeyPath withMapping:(id<RKObjectMappingDefinition>)objectOrDynamicMapping reversible:(BOOL)reversible;
 
-+ (RKObjectRelationshipMapping*)mappingFromKeyPath:(NSString*)sourceKeyPath toKeyPath:(NSString*)destinationKeyPath withMapping:(id<RKObjectMappingDefinition>)objectOrDynamicMapping reversible:(BOOL)reversible transformer:(id<RKObjectTransformer>)transformer;
-
-
-+ (RKObjectRelationshipMapping*)inverseMappingForMapping:(RKObjectRelationshipMapping*)forwardMapping depth:(int)depth;
-
 @end

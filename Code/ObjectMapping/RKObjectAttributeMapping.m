@@ -19,63 +19,46 @@
 //
 
 #import "RKObjectAttributeMapping.h"
-#import "RKObjectTransformer.h"
 
 @implementation RKObjectAttributeMapping
 
 @synthesize sourceKeyPath = _sourceKeyPath;
 @synthesize destinationKeyPath = _destinationKeyPath;
-@synthesize transformer = _transformer;
 
 /**
  @private
  */
-- (id)initWithSourceKeyPath:(NSString*)sourceKeyPath andDestinationKeyPath:(NSString*)destinationKeyPath transformer:(id<RKObjectTransformer>)transformer {
+- (id)initWithSourceKeyPath:(NSString*)sourceKeyPath andDestinationKeyPath:(NSString*)destinationKeyPath {
     NSAssert(sourceKeyPath != nil, @"Cannot define an element mapping an element name to map from");
     NSAssert(destinationKeyPath != nil, @"Cannot define an element mapping without a property to apply the value to");
     self = [super init];
     if (self) {
         _sourceKeyPath = [sourceKeyPath retain];
         _destinationKeyPath = [destinationKeyPath retain];
-        _transformer = [transformer retain];
     }
     
     return self;
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-    RKObjectAttributeMapping* copy = [[[self class] allocWithZone:zone] initWithSourceKeyPath:self.sourceKeyPath andDestinationKeyPath:self.destinationKeyPath transformer:self.transformer];
+    RKObjectAttributeMapping* copy = [[[self class] allocWithZone:zone] initWithSourceKeyPath:self.sourceKeyPath andDestinationKeyPath:self.destinationKeyPath];
     return copy;
 }
 
 - (void)dealloc {
     [_sourceKeyPath release];
     [_destinationKeyPath release];
-    [_transformer release];
     
     [super dealloc];
 }
 
 - (NSString*)description {
-    return [NSString stringWithFormat:@"RKObjectKeyPathMapping: %@ => %@%@", self.sourceKeyPath,
-            (_transformer ? [NSString stringWithFormat:@"%s => ",
-                             object_getClassName(_transformer)] : @""),
-            self.destinationKeyPath];
+    return [NSString stringWithFormat:@"RKObjectKeyPathMapping: %@ => %@", self.sourceKeyPath, self.destinationKeyPath];
 }
 
 + (RKObjectAttributeMapping*)mappingFromKeyPath:(NSString*)sourceKeyPath toKeyPath:(NSString*)destinationKeyPath {
-    RKObjectAttributeMapping* mapping = [[self alloc] initWithSourceKeyPath:sourceKeyPath andDestinationKeyPath:destinationKeyPath transformer:nil];
+    RKObjectAttributeMapping* mapping = [[self alloc] initWithSourceKeyPath:sourceKeyPath andDestinationKeyPath:destinationKeyPath];
     return [mapping autorelease];
-}
-
-+ (RKObjectAttributeMapping*)mappingFromKeyPath:(NSString*)sourceKeyPath toKeyPath:(NSString*)destinationKeyPath transformer:(id<RKObjectTransformer>)transformer {
-    RKObjectAttributeMapping* mapping = [[self alloc] initWithSourceKeyPath:sourceKeyPath andDestinationKeyPath:destinationKeyPath transformer:transformer];
-    return [mapping autorelease];
-}
-
-+ (RKObjectAttributeMapping*)inverseMappingForMapping:(RKObjectAttributeMapping*)forwardMapping
-{
-    return [self mappingFromKeyPath:forwardMapping.destinationKeyPath toKeyPath:forwardMapping.sourceKeyPath transformer:[forwardMapping.transformer inverseTransformer]];
 }
 
 @end
